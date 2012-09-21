@@ -1,6 +1,6 @@
-# Quimby
+# Foursquare
 
-### Formerly named after a pop star whose lawyers decided they didn't like us using his name.
+### This is a fork from the groupme/quimby gem
 
 It's a Foursquare API wrapper. It uses objects instead of hashes, and tries to be smart about when to load things. 
 
@@ -10,7 +10,7 @@ Install it as a gem (in your `Gemfile`) and its dependencies:
 
     gem "json"
     gem "typhoeus"
-    gem "quimby"
+    gem "quimby", :git => "git@github.com:/yiftee/foursquare.git"
 
 ## Usage
 
