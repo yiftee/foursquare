@@ -30,7 +30,7 @@ module Foursquare
       @settings ||= Foursquare::Settings.new(self)
     end
 
-    def get(param, params={})
+    def get(path, params={})
       params = camelize(params)
       Foursquare.log("GET #{API + path}")
       Foursquare.log("PARAMS: #{params.inspect}")

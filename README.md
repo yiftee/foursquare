@@ -10,7 +10,7 @@ Install it as a gem (in your `Gemfile`) and its dependencies:
 
     gem "json"
     gem "typhoeus"
-    gem "quimby", :git => "git@github.com:/yiftee/foursquare.git"
+    gem "quimby", :git => "git@github.com:/yiftee/foursquare.git", :branch => "20120920-stable"
 
 ## Usage
 
