@@ -1,7 +1,8 @@
 module Foursquare
   class Base
     API = "https://api.foursquare.com/v2/"
-
+    VERSION_DATE_SUPPORTED = "20120920"  #indicates that the client is up to date as of the specified date https://developer.foursquare.com/overview/versioning
+    
     def initialize(*args)
       case args.size
       when 1
@@ -29,7 +30,7 @@ module Foursquare
       @settings ||= Foursquare::Settings.new(self)
     end
 
-    def get(path, params={})
+    def get(param, params={})
       params = camelize(params)
       Foursquare.log("GET #{API + path}")
       Foursquare.log("PARAMS: #{params.inspect}")
@@ -44,6 +45,7 @@ module Foursquare
       Foursquare.log("POST #{API + path}")
       Foursquare.log("PARAMS: #{params.inspect}")
       merge_auth_params(params)
+      version(params)
       response = JSON.parse(Typhoeus::Request.post(API + path, :params => params).body)
       Foursquare.log(response.inspect)
       error(response) || response["response"]
@@ -103,6 +105,10 @@ module Foursquare
         o[k.to_s.gsub(/(_[a-z])/) { |m| m[1..1].upcase }] = v
         o
       }
+    end
+    
+    def version(params)
+      params.merge!(:v => VERSION_DATE_SUPPORTED)
     end
 
     def error(response)
