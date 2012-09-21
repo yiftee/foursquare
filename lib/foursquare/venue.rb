@@ -1,7 +1,14 @@
 module Foursquare
   class Venue
     attr_reader :json
-
+    PHOTO_SIZE_LARGE = "500x500"
+    PHOTO_SIZE_MEDIUM = "300x300"
+    PHOTO_SIZE_SMALL = "100x100"
+    PHOTO_SIZE_XSMALL = "36x36"
+    
+    PHOTO_DEFAULT_SIZE = PHOTO_SIZE_LARGE
+    
+    
     def initialize(foursquare, json)
       @foursquare, @json = foursquare, json
     end
@@ -67,23 +74,41 @@ module Foursquare
     end
     
     def photos_count
+      fetch if @json["photos"].blank?
       @json["photos"]["count"]
     end
     
-    # not all photos may be present here (but we try to avoid one extra API call)
-    # if you want to get all the photos, try all_photos
-    def photos
-      return all_photos if @json["photos"].blank?
-      @json["photos"]["groups"].select { |g| g["type"] == "venue" }.first["items"].map do |item|
-        Foursquare::Photo.new(@foursquare, item)
+    
+    def business_photos
+      fetch if @json["photos"].blank?
+      if(@json["photos"]["count"].to_i == 0 || @json["photos"]["groups"][1]["count"].to_i == 0)
+        return []
+      end
+      photos = []
+      @json["photos"]["groups"][1]["items"].each do |item|   
+          photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]      
       end
     end
     
-    # https://developer.foursquare.com/docs/venues/photos.html
-    def all_photos(options={:group => "venue"})
-      @foursquare.get("venues/#{id}/photos", options)["photos"]["items"].map do |item|
-        Foursquare::Photo.new(@foursquare, item)
+    def icon
+    
+    end
+    
+    
+    
+    def all_photos
+      fetch if @json["photos"].blank?
+      if(@json["photos"]["count"].to_i == 0)
+        return []
       end
+      photos = []
+      @json["photos"]["groups"].each do |g|
+        g["items"].each do |item|
+          photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]
+        end
+      end
+      
+      return photos
     end
     
     # count the people who have checked-in at the venue in the last two hours
