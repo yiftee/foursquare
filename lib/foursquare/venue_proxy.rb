@@ -11,8 +11,8 @@ module Foursquare
     def search(options={})
       raise ArgumentError, "You must include :ll or :near" unless options[:ll] || options[:near]
       venues = []
-      response = foursquare.get('venues/search', options)["venues"].each do |v|
-        venues << Foursquare::Venue.new(foursquare, v)
+      response = @foursquare.get('venues/search', options)["venues"].each do |v|
+        venues << Foursquare::Venue.new(@foursquare, v)
       end
       venues
       
