@@ -1,6 +1,7 @@
 module Foursquare
   class Venue
     attr_reader :json
+    attr_reader :json_photos
     PHOTO_SIZE_LARGE = "500x500"
     PHOTO_SIZE_MEDIUM = "300x300"
     PHOTO_SIZE_SMALL = "100x100"
@@ -10,7 +11,7 @@ module Foursquare
     
     
     def initialize(foursquare, json)
-      @foursquare, @json = foursquare, json
+      @foursquare, @json, @json_photos = foursquare, json, json_photos
     end
     
     def fetch
@@ -18,6 +19,9 @@ module Foursquare
       self
     end
 
+    def fetch_photos
+      @json_photos = @foursquare.get("venues/#{id}/photos?group=venue")["photos"]
+      self
     def id
       @json["id"]
     end
@@ -74,40 +78,33 @@ module Foursquare
     end
     
     def photos_count
-      fetch if @json["photos"].blank?
-      @json["photos"]["count"]
+      fetch_photos if @json_photos.blank?
+      @json_photos["count"]
     end
     
     
     def business_photos
-      fetch if @json["photos"].blank?
-      if(@json["photos"]["count"].to_i == 0 || @json["photos"]["groups"][1]["count"].to_i == 0)
+      fetch_photos if @json_photos.blank?
+      if(@json_photos["count"].to_i == 0)
         return []
       end
       photos = []
-      @json["photos"]["groups"][1]["items"].each do |item|   
-          photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]      
+      @json_photos["items"].each do |item|
+          photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]
       end
-    end
-    
-    def icon
-    
-    end
-    
+      return photos
+    end  
     
     
     def all_photos
-      fetch if @json["photos"].blank?
-      if(@json["photos"]["count"].to_i == 0)
+      fetch_photos if @json_photos.blank?
+      if(@json_photos["count"].to_i == 0)
         return []
       end
       photos = []
-      @json["photos"]["groups"].each do |g|
-        g["items"].each do |item|
+      @json_photos["items"].each do |item|
           photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]
-        end
       end
-      
       return photos
     end
     
