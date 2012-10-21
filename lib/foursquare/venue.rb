@@ -20,7 +20,9 @@ module Foursquare
     end
 
     def fetch_photos
-      @json_photos = @foursquare.get("venues/#{id}/photos?group=venue")["photos"]
+      options = {}
+      options[:group] = "venue"
+      @json_photos = @foursquare.get("venues/#{id}/photos",options)["photos"]
       self
     end
     
