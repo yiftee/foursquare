@@ -100,6 +100,7 @@ module Foursquare
             photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]
         end
       else
+        photos = []
         @json["photos"]["groups"].first["items"].each do |item|
           photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]
         end
