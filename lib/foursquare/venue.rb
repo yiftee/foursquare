@@ -89,19 +89,27 @@ module Foursquare
     
     
     def business_photos
-      fetch_photos if @json_photos.blank?
-      if(@json_photos["count"].to_i == 0)
-        return []
-      end
-      photos = []
-      @json_photos["items"].each do |item|
+      
+      if(@json["photos"].blank? && venue.json["photos"]["groups"].first["items"].blank?)
+        fetch_photos if @json_photos.blank?
+        if(@json_photos["count"].to_i == 0)
+          return []
+        end
+        photos = []
+        @json_photos["items"].each do |item|
+            photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]
+        end
+      else
+        venue.json["photos"]["groups"].first["items"].each do |item|
           photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]
+        end
       end
       return photos
     end  
     
     
     def all_photos
+
       fetch_photos if @json_photos.blank?
       if(@json_photos["count"].to_i == 0)
         return []
@@ -110,6 +118,7 @@ module Foursquare
       @json_photos["items"].each do |item|
           photos << item["prefix"] + PHOTO_DEFAULT_SIZE + item["suffix"]
       end
+      
       return photos
     end
     
