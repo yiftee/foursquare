@@ -1,7 +1,7 @@
 module Foursquare
   class Base
     API = "https://api.foursquare.com/v2/"
-    VERSION_DATE_SUPPORTED = "20130101"  #indicates that the client is up to date as of the specified date https://developer.foursquare.com/overview/versioning
+    VERSION_DATE_SUPPORTED = "20130619"  #indicates that the client is up to date as of the specified date https://developer.foursquare.com/overview/versioning
     
     def initialize(*args)
       case args.size

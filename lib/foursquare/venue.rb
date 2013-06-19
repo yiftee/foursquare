@@ -89,7 +89,9 @@ module Foursquare
     
     
     def business_photos
-      
+      if(@json["photos"]["groups"].count == 0)
+        self.fetch
+      end
       if(@json["photos"].blank? && @json["photos"]["groups"].first["items"].blank?)
         fetch_photos if @json_photos.blank?
         if(@json_photos["count"].to_i == 0)
